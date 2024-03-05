@@ -12,7 +12,7 @@ function App() {
       <header>Welcome to my version of React's Tic-Tac-Toe Tutorial. We're currently under construction 😅</header>
       <header className='h1'>Apologies for the delay. Here's a cat meme to compensate...</header>
 
-      <img src= "" className="img0"/>
+      <img src= "./cat-meme.jpg" className="img0"/>
 
       {/**We're gonna make divs to contain rows of squares now*/}
       <div className='board-row'>
