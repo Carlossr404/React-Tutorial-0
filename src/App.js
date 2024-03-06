@@ -2,11 +2,38 @@ import './App.css';
 import './index.css';
 import { useState } from 'react';
 
+{/**calcWinner: Helper function that checks for a winner
+  * Input: squares - array of values in the squares
+  * Returns: "X", "O", or null */}
+function calcWinner(squares){
+  //array of lines- trupples of square indicies that will indicate a winner if they all match
+  const lines = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+  ];
+  //compare the 3 squares corresponding to indicies from each line in lines array
+  for (let i = 0; i < lines.length; i++){
+    const [a, b, c]= lines[i];
+    if(squares[a] && squares[a] === squares[b] && squares[a] === squares[c]){
+      return squares[a];
+    }
+  }
+
+  return null;
+
+}
+
 {/**Square Component: handles all square-related matters 
-   * Input: val - item/string/value to be displayed by square*/}
+   * Input: val- item/string/value to be displayed by square; onSquareClick- function to be run updating "val" once Square is clicked
+   * Return: Button, rendered as a square that displays  "val"
+  *Remember to use the " () => " syntax before the function call */}
 function Square({val, onSquareClick}) {
-
-
   return(
     <button 
       className='square'
@@ -17,17 +44,28 @@ function Square({val, onSquareClick}) {
   );
 }
 
-{/*Function that contains our website*/}
+{/**App: Function that contains our website*/}
 function App() {
-  {/** setting up array that will hold our board data */}
+  {/** setting up turns and array that will hold our board data */}
+  const [xNext, setXNext] = useState(true);
   const [squares, setSquares]= useState(Array(9).fill(null));
 
   {/**handleCLick: updates squares array holding board's state 
     * Input: i - index of square to be marked*/}
   function handleClick(i) {
-    const nextSquares = squares.slice();
-    nextSquares[i] = "X";
+    if(squares[i]){return;}    //make sure the square is empty. Return/Do nothing if it isn't
+    const nextSquares = squares.slice();  //copy "squares" array
+    
+    //mark square
+    if (xNext){
+      nextSquares[i]= "X";
+    } else {
+      nextSquares[i]= "O";
+    }
+
+    //update state
     setSquares(nextSquares);
+    setXNext(!xNext);
   }
 
   {/*Everything inside return is rendered as the website*/}
@@ -40,7 +78,7 @@ function App() {
 
       <img src= "./cat-meme.jpg" className="img0"/>
 
-      {/**We're gonna make divs to contain rows of squares now*/}
+      {/**Divs to contain rows of squares*/}
       <div className='board-row'>
         <Square val={squares[0]} onSquareClick={() => handleClick(0)} />
         <Square val={squares[1]} onSquareClick={() => handleClick(1)} />
