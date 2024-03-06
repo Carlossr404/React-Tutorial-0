@@ -53,7 +53,7 @@ function App() {
   {/**handleCLick: updates squares array holding board's state 
     * Input: i - index of square to be marked*/}
   function handleClick(i) {
-    if(squares[i]){return;}    //make sure the square is empty. Return/Do nothing if it isn't
+    if(squares[i] || calcWinner(squares)){return;}    //make sure the square is empty and there's no winner yet. Return/Do nothing if it isn't
     const nextSquares = squares.slice();  //copy "squares" array
     
     //mark square
