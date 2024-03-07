@@ -77,7 +77,7 @@ function Board({xNext, squares, onPlay}) {
   }
 
   return (
-    <>
+    <div className="board">
       
       <div className='status'>{status}</div>
       {/**Divs to contain rows of squares*/}
@@ -97,7 +97,7 @@ function Board({xNext, squares, onPlay}) {
         <Square val={squares[8]} onSquareClick={() => handleClick(8)} />
       </div>
 
-    </>
+    </div>
   );
 }
 
@@ -119,15 +119,37 @@ function Game(){
     setXNext(!xNext);
   }
 
+  /**
+   * jumpTo: jumps to selected move
+   */
+  function jumpTo(nxtMove){
+    //TODO
+  }
+
+  //map hist into moves- array of buttons that will, when clicked, call jumpTo() w/ move- key for button in moves
+  const moves = hist.map((squares, move) => {
+    let desc;
+    if (move > 0 ){
+      desc = "Go to move #" + move;
+    }else{
+      desc= "Go to game start";
+    }
+    return (
+      <li key = {move}>
+        <button className="button" onClick={() => jumpTo(move)}>{desc}</button>
+      </li>
+    );
+  });
+
   /* Everything in the website must be wrapped within an enclosing tag... In this case, the div tag.
    * This is b/c only a single element may be returned  */
   return(
     <div className="game">
 
       <h1 className='h1'>Hi! Welcome to my version of the React Tic-Tac-Toe Tutorial. Click on the board to start the game!</h1>
-      <Board xNext={xNext} squares={currSquares} onPlay={handlePlay} />
       <div className='game-info'>
-        <ol>{/**TODO */}</ol>
+        <ol className='li'>{moves}</ol>
+        <Board xNext={xNext} squares={currSquares} onPlay={handlePlay} />
       </div>
 
     </div>
