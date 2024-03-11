@@ -1,8 +1,9 @@
 import './App.css';
 import './index.css';
 import { useState } from 'react';
+let win= false;  //tracking if there is a winner
 
-/**calcWinner: Helper function that checks for a winner
+/**calcWinner: Helper function that checks for a winner. Sets winner to true if there is one
   * Input: squares - array of values in the squares
   * Returns: "X", "O", or null */
 function calcWinner(squares){
@@ -22,6 +23,7 @@ function calcWinner(squares){
   for (let i = 0; i < lines.length; i++){
     const [a, b, c]= lines[i];
     if(squares[a] && squares[a] === squares[b] && squares[a] === squares[c]){
+      win= true;
       return squares[a];
     }
   }
@@ -51,20 +53,20 @@ function Square({val, onSquareClick}) {
   */
 function Board({xNext, squares, onPlay}) {
 
-  /**handleCLick: updates squares array holding board's state and calls onPlay() w/ nextSquares, the new state of the board
+  /**handleCLick: updates squares array holding board's state and calls onPlay() w/ nxtSquares, the new state of the board
     * Input: i - index of square to be marked*/
   function handleClick(i) {
     if(squares[i] || calcWinner(squares)){return;}    //make sure the square is empty and there's no winner yet. Return/Do nothing if it isn't
-    const nextSquares = squares.slice();  //copy "squares" array
+    const nxtSquares = squares.slice();  //copy "squares" array
     
     //mark square
     if (xNext){
-      nextSquares[i]= "X";
+      nxtSquares[i]= "X";
     } else {
-      nextSquares[i]= "O";
+      nxtSquares[i]= "O";
     }
 
-    onPlay(nextSquares);
+    onPlay(nxtSquares);
   }
 
   //Calculate winner. If there is one, display who it is. Else, display the next player
@@ -96,7 +98,10 @@ function Board({xNext, squares, onPlay}) {
         <Square val={squares[7]} onSquareClick={() => handleClick(7)} />
         <Square val={squares[8]} onSquareClick={() => handleClick(8)} />
       </div>
-
+      {win
+        ? <div>"Referesh the page to play again."</div>
+        : <></>
+      }
     </div>
   );
 }
@@ -108,22 +113,27 @@ function Game(){
   //setting up turns and array that will hold our move history
   const [xNext, setXNext] = useState(true);
   const [hist, setHist] = useState([Array(9).fill(null)]);
-  const currSquares = hist[hist.length - 1]; //square array to be displayed
+  const [currMove, setCurrMove] = useState(0);
+  const currSquares = hist[currMove]; //square array to be displayed
 
   /**
-   * handlePlay: toggles xNext and updates hist -array of board states representing history of the board- w/ nextSquares
-   * Input: nextSquares- new state of the board
+   * handlePlay: toggles xNext and updates hist -array of board states representing history of the board- w/ nxtSquares
+   * Input: nxtSquares- new state of the board
    */
-  function handlePlay(nextSquares){
-    setHist([...hist, nextSquares]);
+  function handlePlay(nxtSquares){
+    const nxtHist= [...hist.slice(0, currMove+1), nxtSquares];
+    setHist(nxtHist);
+    setCurrMove(nxtHist.length - 1);
     setXNext(!xNext);
   }
 
   /**
-   * jumpTo: jumps to selected move
+   * jumpTo: jumps to selected move. updates currMove and switches xNext to true if nxtMove is even
+   * Input: nxtMove- the move to set currMove to 
    */
   function jumpTo(nxtMove){
-    //TODO
+    setCurrMove(nxtMove);
+    setXNext(nxtMove % 2 === 0);
   }
 
   //map hist into moves- array of buttons that will, when clicked, call jumpTo() w/ move- key for button in moves
