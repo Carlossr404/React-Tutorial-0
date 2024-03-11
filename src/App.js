@@ -111,10 +111,10 @@ function Board({xNext, squares, onPlay}) {
  */
 function Game(){
   //setting up turns and array that will hold our move history
-  const [xNext, setXNext] = useState(true);
   const [hist, setHist] = useState([Array(9).fill(null)]);
   const [currMove, setCurrMove] = useState(0);
   const currSquares = hist[currMove]; //square array to be displayed
+  const xNext = currMove % 2 === 0;
 
   /**
    * handlePlay: toggles xNext and updates hist -array of board states representing history of the board- w/ nxtSquares
@@ -124,7 +124,6 @@ function Game(){
     const nxtHist= [...hist.slice(0, currMove+1), nxtSquares];
     setHist(nxtHist);
     setCurrMove(nxtHist.length - 1);
-    setXNext(!xNext);
   }
 
   /**
@@ -133,7 +132,6 @@ function Game(){
    */
   function jumpTo(nxtMove){
     setCurrMove(nxtMove);
-    setXNext(nxtMove % 2 === 0);
   }
 
   //map hist into moves- array of buttons that will, when clicked, call jumpTo() w/ move- key for button in moves
